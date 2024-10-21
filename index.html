@@ -6,20 +6,49 @@
     <title>Cars</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+            font-family: 'Arial', sans-serif;
+            background-color: #1a1f36; /* Dark blue-gray background */
+            color: #d0d0d0; /* Light gray for text */
             margin: 0;
             padding: 0;
         }
 
-        h1 {
-            text-align: center;
-            margin: 20px 0;
+        /* Navbar styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between; /* Space between left and right items */
+            align-items: center; /* Center items vertically */
+            padding: 10px 20px;
+            background-color: #2d334a; /* Navbar background color */
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            color: #ffffff; /* White for logo */
+            font-weight: bold;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            align-items: center; /* Center text vertically */
+        }
+
+        .navbar .nav-link {
+            margin-left: 20px; /* Space between links */
+            color: #ffffff; /* White text for links */
+            text-decoration: none; /* Remove underline */
+            font-size: 16px; /* Font size for links */
+            font-family: 'Arial', sans-serif; /* Font family for links */
+            transition: color 0.3s ease; /* Transition for hover effect */
+        }
+
+        .navbar .nav-link:hover {
+            color: #f0a500; /* Change color on hover */
         }
 
         .container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(3, 1fr); /* 3 cards in a row */
             grid-gap: 20px;
             padding: 20px;
             max-width: 1200px;
@@ -27,12 +56,14 @@
         }
 
         .card {
-            background-color: #fff;
+            background-color: #2d334a; /* Dark blue-gray card background */
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             padding: 20px;
-            text-align: center;
-            transition: transform 0.2s ease;
+            text-align: left; /* Align text to the left */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            overflow: hidden; /* Ensures the content wraps without overflow */
         }
 
         .card img {
@@ -44,32 +75,125 @@
 
         .card h2 {
             font-size: 18px;
-            margin: 10px 0;
-            color: #333;
+            margin: 10px 0 5px; /* Reduced bottom margin for name */
+            color: #eaeaea; /* Light gray for card titles */
         }
 
-        .card p {
-            font-size: 14px;
-            color: #777;
-            margin: 5px 0;
+        .info-container {
+            display: flex;
+            justify-content: space-between; /* Space between items */
+            align-items: center; /* Center items vertically */
+            margin: 10px 0; /* Margin around info container */
+        }
+
+        .details {
+            display: flex;
+            flex-direction: column; /* Stack name and price vertically */
         }
 
         .card .price {
             font-size: 16px;
             font-weight: bold;
-            color: #f76c6c;
-            margin: 10px 0;
+            color: #f0a500; /* Yellow-orange for prices */
+            margin: 0; /* Removed margin to reduce gap */
+        }
+
+        /* Star rating */
+        .stars {
+            display: flex;
+            align-items: center; /* Center stars vertically */
+        }
+
+        .star {
+            color: #ffd700; /* Gold color for stars */
+            font-size: 18px;
+            margin-left: 2px; /* Space between stars */
         }
 
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 16px rgba(100, 149, 237, 0.4); /* Cool blue hover shadow */
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); 
+        }
+
+        .modal-content {
+            background-color: #3c435e; /* Dark blue-gray for modal */
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            color: #ffffff; /* White text in modal */
+        }
+
+        .close {
+            color: #ccc;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .modal h2,
+        .modal p {
+            text-align: left;
+        }
+
+        .modal p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #d0d0d0; /* Light gray for modal text */
         }
     </style>
 </head>
 <body>
-    <h1>Cars</h1>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">Cars</div>
+        <div class="nav-links">
+            <a href="#" class="nav-link">Contact Us</a>
+            <a href="#" class="nav-link">Support</a>
+            <a href="#" class="nav-link">Login</a>
+        </div>
+    </div>
+
     <div class="container" id="productContainer"></div>
+
+    <!-- Modal for car details -->
+    <div id="carModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img id="modalImg" src="" alt="">
+            <h2 id="modalTitle"></h2>
+            <p id="modalPrice"></p>
+            <p id="modalDescription"></p>
+        </div>
+    </div>
 
     <script>
         fetch('/products')
@@ -81,14 +205,56 @@
                     card.classList.add('card');
                     card.innerHTML = `
                         <img src="${product.img_url}" alt="${product.name}">
-                        <h2>${product.name}</h2>
-                        <p>${product.description}</p>
-                        <p class="price">$${product.price}</p>
+                        <div class="info-container">
+                            <div class="details">
+                                <h2>${product.name}</h2>
+                                <p class="price">$${product.price}</p>
+                            </div>
+                            <div class="stars">
+                                ${renderStars(product.rating)}
+                            </div>
+                        </div>
                     `;
+                    card.addEventListener('click', () => openModal(product));
                     productContainer.appendChild(card);
                 });
             })
             .catch(err => console.error('Error fetching products:', err));
+
+        // Function to render star rating
+        function renderStars(rating) {
+            let starsHtml = '';
+            for (let i = 0; i < 5; i++) {
+                starsHtml += `<span class="star">${i < rating ? '★' : '☆'}</span>`;
+            }
+            return starsHtml;
+        }
+
+        // Modal functionality
+        const modal = document.getElementById('carModal');
+        const closeBtn = document.querySelector('.close');
+        const modalImg = document.getElementById('modalImg');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalPrice = document.getElementById('modalPrice');
+        const modalDescription = document.getElementById('modalDescription');
+
+        function openModal(product) {
+            modal.style.display = 'block';
+            modalImg.src = product.img_url;
+            modalTitle.textContent = product.name;
+            modalPrice.textContent = `Price: $${product.price}`;
+            modalDescription.textContent = product.description || 'No additional description available.';
+        }
+
+        closeBtn.onclick = function () {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function (event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>

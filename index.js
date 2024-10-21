@@ -20,7 +20,7 @@ const db = mysql.createConnection({
 db.connect((err) => {
     if (err) {
         console.error('Error connecting to the database:', err);
-        return;
+        process.exit(1); // Exit the application on connection error
     }
     console.log('Connected to the database');
 });
@@ -31,10 +31,10 @@ app.get('/products', (req, res) => {
     db.query(query, (err, results) => {
         if (err) {
             console.error('Error fetching products:', err);
-            res.status(500).send('Error fetching products');
-            return;
+            process.exit(1);
+            // return res.status(500).send('Error fetching products'); // Return 500 on query failure
         }
-        res.json(results);
+        res.json(results); // Return results with 200 if successful
     });
 });
 
